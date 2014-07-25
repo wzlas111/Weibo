@@ -2,5 +2,6 @@
 <resources>
     
     <attr name="add" format="reference"/>
+    <attr name="refresh" format="reference"/>
     
 </resources>
