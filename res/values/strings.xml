@@ -1,6 +1,11 @@
 <resources>
 
-    <string name="app_name">四次元</string>
+    <string name="app_name">极简微博</string>
 
     <string name="token_has_expired">已过期</string>
+    <string name="new_account">新建</string>
+    
+    <string name="web_login">网页授权</string>
+    <string name="app_login">客户端授权</string>
+    <string name="black_login">黑魔法授权</string>
 </resources>
