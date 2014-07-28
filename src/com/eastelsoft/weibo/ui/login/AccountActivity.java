@@ -5,6 +5,7 @@ import java.util.List;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -63,7 +64,11 @@ public class AccountActivity extends AbstractAppActivity {
 							@Override
 							public void onClick(DialogInterface dialog, int which) {
 								String val = valueList.get(which);
-								Toast.makeText(AccountActivity.this, val, Toast.LENGTH_SHORT).show();
+								if (which == 0) {
+									startActivity(new Intent(AccountActivity.this, WebLoginActivity.class));
+								}else {
+									Toast.makeText(AccountActivity.this, val, Toast.LENGTH_SHORT).show();
+								}
 							}
 						}).show();
 			break;
