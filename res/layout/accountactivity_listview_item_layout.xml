@@ -36,7 +36,7 @@
        	 	android:text="@string/token_has_expired"
        	 	android:textColor="@color/red"
        	 	android:textSize="12sp" />
-
+        
     </LinearLayout>
 
 </LinearLayout>

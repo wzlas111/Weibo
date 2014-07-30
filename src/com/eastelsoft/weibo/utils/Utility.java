@@ -1,24 +1,30 @@
 package com.eastelsoft.weibo.utils;
 
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.Map;
 import java.util.Set;
 
+import com.eastelsoft.weibo.bean.AccountBean;
+
+import android.os.Bundle;
 import android.text.TextUtils;
 
 public class Utility {
+	
+	public static boolean isTokenValid(AccountBean accountBean) {
+		return !TextUtils.isEmpty(accountBean.getAccess_token())
+				&& (System.currentTimeMillis() < accountBean.getExpires_time());
+	}
 	
 	public static String encodeUrl(Map<String, String> param) {
         if (param == null) {
             return "";
         }
-
         StringBuilder sb = new StringBuilder();
-
         Set<String> keys = param.keySet();
         boolean first = true;
-
         for (String key : keys) {
             String value = param.get(key);
             //pain...EditMyProfileDao params' values can be empty
@@ -35,12 +41,26 @@ public class Utility {
 
                 }
             }
-
-
         }
-
         return sb.toString();
     }
+	
+	public static Bundle decodeUrl(String url) {
+		Bundle bundle = new Bundle();
+		if (url != null) {
+			String[] arrs = url.split("&");
+			for (String params : arrs) {
+				String[] vals = params.split("=");
+				try {
+					bundle.putString(URLDecoder.decode(vals[0], "UTF-8"), 
+							URLDecoder.decode(vals[1], "UTF-8"));
+				} catch (UnsupportedEncodingException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return bundle;
+	}
 
 	/**
      * https://svn.apache.org/repos/asf/cayenne/main/branches/cayenne-jdk1.5-generics-unpublished/src/main/java/org/apache/cayenne/conf/Rot47PasswordEncoder.java

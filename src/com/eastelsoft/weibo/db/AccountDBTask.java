@@ -1,8 +1,11 @@
 package com.eastelsoft.weibo.db;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.eastelsoft.weibo.bean.AccountBean;
+import com.eastelsoft.weibo.bean.UserBean;
 import com.eastelsoft.weibo.db.table.AccountTable;
-import com.eastelsoft.weibo.utils.DBResult;
 import com.google.gson.Gson;
 
 import android.content.ContentValues;
@@ -42,5 +45,43 @@ public class AccountDBTask {
 			getWsd().insert(AccountTable.TABLE_NAME, AccountTable.UID, cv);
 			return DBResult.add_successfully;
 		}
+	}
+	
+	public static List<AccountBean> getAccountList() {
+		List<AccountBean> accountList = new ArrayList<AccountBean>();
+		String sql = "select * from	"+AccountTable.TABLE_NAME;
+		Cursor c = getWsd().rawQuery(sql, null);
+		while(c.moveToNext()) {
+			AccountBean bean = new AccountBean();
+			int colid = c.getColumnIndex(AccountTable.OAUTH_TOKEN);
+			bean.setAccess_token(c.getString(colid));
+			
+			colid = c.getColumnIndex(AccountTable.OAUTH_TOKEN_EXPIRES_TIME);
+			bean.setExpires_time(Long.valueOf(c.getString(colid)));
+			
+			colid = c.getColumnIndex(AccountTable.BLACK_MAGIC);
+			bean.setBlack_magic(c.getInt(colid) == 1);
+			
+			colid = c.getColumnIndex(AccountTable.NAVIGATION_POSITION);
+			bean.setNavigationPosition(c.getInt(colid));
+			
+			Gson gson = new Gson();
+			String infoJson = c.getString(c.getColumnIndex(AccountTable.INFOJSON));
+			try {
+				UserBean userBean = gson.fromJson(infoJson, UserBean.class);
+				bean.setInfo(userBean);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			accountList.add(bean);
+		}
+		return accountList;
+	}
+	
+	public static List<AccountBean> removeAccount(String uid) {
+		String sql = "delete from " + AccountTable.TABLE_NAME + " where " + AccountTable.UID + " = ?";
+		getWsd().execSQL(sql, new String[]{uid});
+		
+		return getAccountList();
 	}
 }

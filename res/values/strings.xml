@@ -2,10 +2,23 @@
 
     <string name="app_name">极简微博</string>
 
+    <string name="token_not_expired">正常</string>
     <string name="token_has_expired">已过期</string>
     <string name="new_account">新建</string>
     <string name="refresh">刷新</string>
+    <string name="delete_account">删除该账号</string>
+    <string name="to_top">置顶</string>
     
+    <string name="timeout">网络有问题，连不上</string>
+    <string name="error_login">授权失败</string>
+    <string name="login_success">授权成功</string>
+    <string name="update_account_success">已有该帐号，授权信息更新成功</string>
+    <string name="token_expires_in_time">请注意，根据新浪微博的平台政策，刚添加的帐号会在 %s
+        天后过期，到时需要重新登录，在授权过期之前重复登陆不会刷新剩余天数
+    </string>
+    <string name="ok">确定</string>
+    
+    <string name="authenticationing">授权中</string>
     <string name="web_login">网页授权</string>
     <string name="app_login">客户端授权</string>
     <string name="black_login">黑魔法授权</string>
