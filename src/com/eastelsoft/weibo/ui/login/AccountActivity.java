@@ -29,6 +29,7 @@ import com.eastelsoft.weibo.R;
 import com.eastelsoft.weibo.bean.AccountBean;
 import com.eastelsoft.weibo.db.AccountDBTask;
 import com.eastelsoft.weibo.ui.base.AbstractAppActivity;
+import com.eastelsoft.weibo.ui.main.MainActivity;
 import com.eastelsoft.weibo.utils.Utility;
 
 public class AccountActivity extends AbstractAppActivity {
@@ -110,7 +111,8 @@ public class AccountActivity extends AbstractAppActivity {
 	
 	private class ListViewItemClickListener implements OnItemClickListener {
 		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-			
+			Intent intent = MainActivity.newInstance();
+			startActivity(intent);
 		}
 	}
 	
