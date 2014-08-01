@@ -23,8 +23,11 @@
     <string name="app_login">客户端授权</string>
     <string name="black_login">黑魔法授权</string>
     
-    <string name="a_alipay">支付宝</string>
-    <string name="a_service">服务</string>
-    <string name="a_research">探索</string>
-    <string name="a_money">财富</string>
+    <string name="t_home">首页</string>
+    <string name="t_metions">提及</string>
+    <string name="t_commnets">评论</string>
+    <string name="t_fav">收藏</string>
+    <string name="t_profile">个人资料</string>
+    <string name="t_search">搜索</string>
+    <string name="t_dm">私信</string>
 </resources>

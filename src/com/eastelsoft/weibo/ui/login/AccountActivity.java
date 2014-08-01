@@ -1,6 +1,5 @@
 package com.eastelsoft.weibo.ui.login;
 
-import java.nio.channels.AlreadyConnectedException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -11,6 +10,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -30,6 +30,7 @@ import com.eastelsoft.weibo.bean.AccountBean;
 import com.eastelsoft.weibo.db.AccountDBTask;
 import com.eastelsoft.weibo.ui.base.AbstractAppActivity;
 import com.eastelsoft.weibo.ui.main.MainActivity;
+import com.eastelsoft.weibo.utils.SettingHelper;
 import com.eastelsoft.weibo.utils.Utility;
 
 public class AccountActivity extends AbstractAppActivity {
@@ -43,6 +44,11 @@ public class AccountActivity extends AbstractAppActivity {
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		//若存在默认账号，则直接进入
+		if (getIntent() != null) {
+			jumpToMainActivity();
+		}
+		
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.accountactivity_layout);
 		
@@ -109,10 +115,24 @@ public class AccountActivity extends AbstractAppActivity {
 		}
 	}
 	
+	private void jumpToMainActivity() {
+		String id = SettingHelper.getDefaultAccountId();
+		if (!TextUtils.isEmpty(id)) {
+			AccountBean bean = AccountDBTask.getAccount(id);
+			if (bean != null) {
+				Intent intent = MainActivity.newInstance(bean);
+				startActivity(intent);
+				finish();
+			}
+		}
+	}
+	
 	private class ListViewItemClickListener implements OnItemClickListener {
 		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-			Intent intent = MainActivity.newInstance();
+			Intent intent = MainActivity.newInstance(accountList.get(position));
+			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 			startActivity(intent);
+			finish();
 		}
 	}
 	

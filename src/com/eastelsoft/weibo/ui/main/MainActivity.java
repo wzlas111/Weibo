@@ -2,22 +2,22 @@ package com.eastelsoft.weibo.ui.main;
 
 import com.eastelsoft.weibo.GlobalContext;
 import com.eastelsoft.weibo.R;
-import com.eastelsoft.weibo.ui.fragment.AlipayFragment;
-import com.eastelsoft.weibo.ui.fragment.ServiceFragment;
+import com.eastelsoft.weibo.bean.AccountBean;
+import com.eastelsoft.weibo.utils.BundleExtraConstants;
+import com.eastelsoft.weibo.utils.SettingHelper;
+import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
+import com.jeremyfeinstein.slidingmenu.lib.app.SlidingFragmentActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.RelativeLayout;
 
-public class MainActivity extends FragmentActivity implements OnClickListener{
+public class MainActivity extends SlidingFragmentActivity {
 	
-	private AlipayFragment alipayFragment;
-	private ServiceFragment serviceFragment;
+	private AccountBean accountBean;
+	
 	private FragmentManager fragmentManager;
 	
 	private RelativeLayout alipayLayout;
@@ -26,69 +26,69 @@ public class MainActivity extends FragmentActivity implements OnClickListener{
 	public static Intent newInstance() {
 		return new Intent(GlobalContext.getInstance(), MainActivity.class);
 	}
+	
+	public static Intent newInstance(AccountBean accountBean) {
+		Intent intent = newInstance();
+		intent.putExtra(BundleExtraConstants.ACCOUNT_EXTRA, accountBean);
+		return intent;
+	}
+	
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+		outState.putParcelable("account", accountBean);
+	}
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.mainactivity);
 		
-		initView();
-		fragmentManager = getSupportFragmentManager();
-		getSupportFragmentManager().executePendingTransactions();
-		setSection(0);
+		if (savedInstanceState != null) {
+			accountBean = savedInstanceState.getParcelable("account");
+		} else { //第一次登陆
+			Intent intent = getIntent();
+			accountBean = intent.getParcelableExtra(BundleExtraConstants.ACCOUNT_EXTRA);
+		}
+		
+		//当二次登录时，需取出默认账号
+		if (accountBean == null) {
+			accountBean = GlobalContext.getInstance().getAccountBean();
+		}
+		
+		//设置默认账号
+		GlobalContext.getInstance().setAccountBean(accountBean);
+		SettingHelper.setDefaultAccountId(accountBean.getUid());
+		
+		buildUI(savedInstanceState);
 	}
 	
-	private void setSection(int index) {
+	
+	private void buildUI(Bundle savedInstanceState) {
+		setContentView(R.layout.content_frame);
+		setBehindContentView(R.layout.menu_frame);
+		getSlidingMenu().setSlidingEnabled(true);
+		getSlidingMenu().setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
+		getActionBar().setDisplayHomeAsUpEnabled(true);
+		getSlidingMenu().setMode(SlidingMenu.LEFT);
+		getSlidingMenu().setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
+		
+		if (savedInstanceState == null) {
+			initFragments();
+		}
+		configSlidingMenu();
+	}
+	
+	private void initFragments() {
 		FragmentTransaction transaction = fragmentManager.beginTransaction();
-		hideFragment(transaction);
-		switch (index) {
-			case 0:
-				if (alipayFragment == null) {
-					alipayFragment = new AlipayFragment();
-					transaction.add(R.id.main_content, alipayFragment);
-				} else {
-					transaction.show(alipayFragment);
-				}
-				break;
-			case 1:
-				if (serviceFragment == null) {
-					serviceFragment = new ServiceFragment();
-					transaction.add(R.id.main_content, serviceFragment);
-				} else {
-					transaction.show(serviceFragment);
-				}
-				break;
-		}
 		transaction.commit();
+		getSupportFragmentManager().executePendingTransactions();
 	}
 	
-	private void hideFragment(FragmentTransaction transaction) {
-		if (alipayFragment != null) {
-			transaction.hide(alipayFragment);
-		}
-		if (serviceFragment != null) {
-			transaction.hide(serviceFragment);
-		}
-	}
-	
-	@Override
-	public void onClick(View v) {
-		switch (v.getId()) {
-			case R.id.alipayLayout:
-				setSection(0);
-				break;
-			case R.id.serviceLayout:
-				setSection(1);
-				break;
-		}
+	private void configSlidingMenu() {
 		
 	}
 	
 	private void initView() {
-		alipayLayout = (RelativeLayout) this.findViewById(R.id.alipayLayout);
-		serviceLayout = (RelativeLayout) this.findViewById(R.id.serviceLayout);
-		alipayLayout.setOnClickListener(this);
-		serviceLayout.setOnClickListener(this);
 	}
 
 }

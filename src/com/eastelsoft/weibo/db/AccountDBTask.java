@@ -84,4 +84,35 @@ public class AccountDBTask {
 		
 		return getAccountList();
 	}
+	
+	public static AccountBean getAccount(String uid) {
+		String sql = "select * from " + AccountTable.TABLE_NAME + " where " + AccountTable.UID + " = ?";
+		Cursor c = getWsd().rawQuery(sql, new String[]{uid});
+		while (c.moveToNext()) {
+			AccountBean bean = new AccountBean();
+			int colid = c.getColumnIndex(AccountTable.OAUTH_TOKEN);
+			bean.setAccess_token(c.getString(colid));
+			
+			colid = c.getColumnIndex(AccountTable.OAUTH_TOKEN_EXPIRES_TIME);
+			bean.setExpires_time(Long.valueOf(c.getString(colid)));
+			
+			colid = c.getColumnIndex(AccountTable.BLACK_MAGIC);
+			bean.setBlack_magic(c.getInt(colid) == 1);
+			
+			colid = c.getColumnIndex(AccountTable.NAVIGATION_POSITION);
+			bean.setNavigationPosition(c.getInt(colid));
+			
+			Gson gson = new Gson();
+			String infoJson = c.getString(c.getColumnIndex(AccountTable.INFOJSON));
+			try {
+				UserBean userBean = gson.fromJson(infoJson, UserBean.class);
+				bean.setInfo(userBean);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return bean;
+		}
+		return null;
+	}
+	
 }
