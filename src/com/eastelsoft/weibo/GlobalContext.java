@@ -25,6 +25,10 @@ public class GlobalContext extends Application {
 		return globalContext;
 	}
 	
+	public String getNickname() {
+		return accountBean.getUsernick();
+	}
+	
 	public AccountBean getAccountBean() {
 		if (accountBean == null) {
 			String id = SettingHelper.getDefaultAccountId();

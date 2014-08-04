@@ -6,6 +6,9 @@ import com.eastelsoft.weibo.bean.UserBean;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 @SuppressLint("ValidFragment")
 public class FriendsFragment extends BaseFragment {
@@ -43,7 +46,15 @@ public class FriendsFragment extends BaseFragment {
 	}
 	
 	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
+		View view = inflater.inflate(R.layout.friends_fragment, container, false);
+		return view;
+	}
+	
+	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
+		super.onActivityCreated(savedInstanceState);
 		switch (getCurrentState(savedInstanceState)) {
 			case FIRST_TIME_START://加载DB中缓存数据
 				
@@ -62,11 +73,13 @@ public class FriendsFragment extends BaseFragment {
 		super.onResume();
 		//下拉自动刷新数据
 		//refresh();
-		buildActionBar();
 	}
 	
 	public void buildActionBar() {
 		getActivity().getActionBar().setTitle(getString(R.string.t_home));
 		getActivity().getActionBar().setIcon(R.drawable.ic_menu_home);
+		getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);
+		
+		System.out.println("FriendsFragment =====> buildActionBar");
 	}
 }

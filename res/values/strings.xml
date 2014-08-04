@@ -30,4 +30,6 @@
     <string name="t_profile">个人资料</string>
     <string name="t_search">搜索</string>
     <string name="t_dm">私信</string>
+    <string name="t_logout">注销</string>
+    <string name="t_settings">设置</string>
 </resources>
