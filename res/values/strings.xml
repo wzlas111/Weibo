@@ -18,6 +18,8 @@
     </string>
     <string name="ok">确定</string>
     
+    <string name="loading_fail">网络问题，加载失败...</string>
+    
     <string name="authenticationing">授权中</string>
     <string name="web_login">网页授权</string>
     <string name="app_login">客户端授权</string>
@@ -32,4 +34,10 @@
     <string name="t_dm">私信</string>
     <string name="t_logout">注销</string>
     <string name="t_settings">设置</string>
+    
+    <string name="g_all">所有人</string>
+    <string name="g_each">互相关注</string>
+    <string name="g_special">特别关注</string>
+    <string name="g_star">名人明星</string>
+    <string name="g_it">科技</string>
 </resources>

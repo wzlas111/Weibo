@@ -2,6 +2,7 @@ package com.eastelsoft.weibo.ui.fragment;
 
 import com.eastelsoft.weibo.R;
 
+import android.app.ActionBar;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,8 +37,11 @@ public class MentionsFragment extends BaseFragment {
 	}
 	
 	public void buildActionBar() {
-		getActivity().getActionBar().setTitle(getString(R.string.t_metions));
-		getActivity().getActionBar().setIcon(R.drawable.repost_light);
-		getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);
+		ActionBar actionBar = getActivity().getActionBar();
+		actionBar.setDisplayShowTitleEnabled(true);
+		actionBar.setTitle(getString(R.string.t_metions));
+		actionBar.setIcon(R.drawable.repost_light);
+		actionBar.setDisplayHomeAsUpEnabled(true);
+		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
 	}
 }
