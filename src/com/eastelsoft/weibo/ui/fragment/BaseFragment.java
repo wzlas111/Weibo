@@ -29,12 +29,22 @@ public class BaseFragment extends Fragment {
 		return view;
 	}
 	
+	@Override
+	public void onViewCreated(View view, Bundle savedInstanceState) {
+		super.onViewCreated(view, savedInstanceState);
+		buildAdapter();
+	}
+	
 	private void buildLayout(LayoutInflater inflater,View view) {
 		pullToRefreshListView = (PullToRefreshListView)view.findViewById(R.id.pull_refresh_list);
 	
 		footerView = inflater.inflate(R.layout.listview_footer_layout, null);
 		getListView().addFooterView(footerView);
 		dismissFooterView();
+	}
+	
+	private void buildAdapter() {
+		
 	}
 	
 	public ListView getListView() {

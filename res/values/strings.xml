@@ -40,4 +40,11 @@
     <string name="g_special">特别关注</string>
     <string name="g_star">名人明星</string>
     <string name="g_it">科技</string>
+    
+    <string name="test_name">搞笑图片会</string>
+    <string name="test_time">今天 10:15</string>
+    <string name="test_source">皮皮时光机</string>
+    <string name="test_content">【经济学入门必看：绝对经典的20部影片！】看完这20部电影，相当于你读完了北大经济学院、光华管理学院和清华经管学院。。。你信不信，反正我信了！！</string>
+    <string name="test_count1">15</string>
+    <string name="test_count2">2</string>
 </resources>
