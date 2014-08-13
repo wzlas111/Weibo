@@ -29,8 +29,6 @@ public class AccountDao {
 		} catch (Exception e) {
 		}
 		
-		
-		
 		String url = URLHelper.GET_SHOW;
 		Map<String, String> params = new HashMap<>();
 		params.put("access_token", access_token);
