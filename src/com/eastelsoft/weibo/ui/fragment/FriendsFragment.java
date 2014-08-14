@@ -126,6 +126,11 @@ public class FriendsFragment extends BaseFragment {
 		
 	}
 	
+	@Override
+	public void buildAdapter() {
+		
+	}
+	
 	private String[] buildGroupData() {
 		List<String> list = new ArrayList<String>();
 		

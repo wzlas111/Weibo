@@ -73,6 +73,21 @@ public class ListItemAdapter extends BaseAdapter {
 	private void buildData(ViewHolder viewHolder, int position) {
 		TimelineBean bean = mList.get(position);
 		UserBean user = bean.getUser();
+		viewHolder.tv_repost_count.setText(bean.getReposts_count());
+		viewHolder.tv_comment_count.setText(bean.getComments_count());
+		viewHolder.tv_post_time.setText(bean.getCreated_at());
+		viewHolder.tv_source.setText(bean.getSource());
+		viewHolder.tv_content.setText(bean.getText());
+		if (user != null) {
+			viewHolder.tv_username.setText(user.getName());
+		}
+		if (bean.isMutiPic()) {
+			viewHolder.img_content_pic.setVisibility(View.VISIBLE);
+			viewHolder.gv_content_pic_muti.setVisibility(View.GONE);
+		} else {
+			viewHolder.img_content_pic.setVisibility(View.GONE);
+			viewHolder.gv_content_pic_muti.setVisibility(View.VISIBLE);
+		}
 		
 	}
 	

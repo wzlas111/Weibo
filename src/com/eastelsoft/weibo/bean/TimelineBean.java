@@ -15,9 +15,23 @@ public class TimelineBean {
 	private int reposts_count;
 	private int comments_count;
 	private String attitudes_count;
+	private String text;
 	private List<String> pic_urls = new ArrayList<String>();
 	
 	private UserBean user;
+	
+	public boolean isMutiPic() {
+		return pic_urls.size() > 0;
+	}
+
+	
+	public String getText() {
+		return text;
+	}
+
+	public void setText(String text) {
+		this.text = text;
+	}
 
 	public String getCreated_at() {
 		return created_at;

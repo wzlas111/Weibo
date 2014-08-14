@@ -43,8 +43,7 @@ public class BaseFragment extends Fragment {
 		dismissFooterView();
 	}
 	
-	private void buildAdapter() {
-		
+	public void buildAdapter() {
 	}
 	
 	public ListView getListView() {
