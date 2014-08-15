@@ -245,6 +245,7 @@ public class JavaHttpUtility {
 
             StringBuilder urlBuilder = new StringBuilder(urlStr);
             urlBuilder.append("?").append(Utility.encodeUrl(param));
+            System.out.println("url : "+urlBuilder.toString());
             URL url = new URL(urlBuilder.toString());
             Proxy proxy = getProxy();
             HttpURLConnection urlConnection;

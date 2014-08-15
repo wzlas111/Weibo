@@ -14,4 +14,8 @@ public class URLHelper {
     //user info
     public static final String GET_UID = URL_SINA_WEIBO + "account/get_uid.json";
     public static final String GET_SHOW = URL_SINA_WEIBO + "users/show.json";
+    
+    //timeline url
+    public static String FRIENDS_TIMELINE = URL_SINA_WEIBO + "statuses/friends_timeline.json";
+    
 }

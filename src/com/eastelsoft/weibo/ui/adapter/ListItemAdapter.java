@@ -6,11 +6,12 @@ import com.eastelsoft.weibo.R;
 import com.eastelsoft.weibo.bean.TimelineBean;
 import com.eastelsoft.weibo.bean.UserBean;
 
-import android.support.v4.app.Fragment;
+import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.GridLayout;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -66,29 +67,29 @@ public class ListItemAdapter extends BaseAdapter {
 		viewHolder.tv_source = (TextView)view.findViewById(R.id.source);
 		viewHolder.tv_content = (TextView)view.findViewById(R.id.content);
 		viewHolder.img_content_pic = (ImageView)view.findViewById(R.id.content_pic);
-		viewHolder.gv_content_pic_muti = (GridView)view.findViewById(R.id.content_pic_muti);
+		viewHolder.gv_content_pic_muti = (GridLayout)view.findViewById(R.id.content_pic_muti);
 		return viewHolder;
 	}
 	
 	private void buildData(ViewHolder viewHolder, int position) {
 		TimelineBean bean = mList.get(position);
 		UserBean user = bean.getUser();
-		viewHolder.tv_repost_count.setText(bean.getReposts_count());
-		viewHolder.tv_comment_count.setText(bean.getComments_count());
+		viewHolder.tv_repost_count.setText(String.valueOf(bean.getReposts_count()));
+		viewHolder.tv_comment_count.setText(String.valueOf(bean.getComments_count()));
 		viewHolder.tv_post_time.setText(bean.getCreated_at());
 		viewHolder.tv_source.setText(bean.getSource());
 		viewHolder.tv_content.setText(bean.getText());
 		if (user != null) {
 			viewHolder.tv_username.setText(user.getName());
 		}
-		if (bean.isMutiPic()) {
+		if (bean.isPicMuti()) {
 			viewHolder.img_content_pic.setVisibility(View.VISIBLE);
 			viewHolder.gv_content_pic_muti.setVisibility(View.GONE);
 		} else {
 			viewHolder.img_content_pic.setVisibility(View.GONE);
 			viewHolder.gv_content_pic_muti.setVisibility(View.VISIBLE);
 		}
-		
+		System.out.println(" data set finish");
 	}
 	
 	private class ViewHolder {
@@ -101,7 +102,7 @@ public class ListItemAdapter extends BaseAdapter {
 		TextView tv_source;
 		TextView tv_content;
 		ImageView img_content_pic;
-		GridView gv_content_pic_muti;
+		GridLayout gv_content_pic_muti;
 		
 	}
 

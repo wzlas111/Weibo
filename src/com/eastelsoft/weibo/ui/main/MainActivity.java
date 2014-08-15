@@ -12,11 +12,10 @@ import com.eastelsoft.weibo.utils.SettingHelper;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import com.jeremyfeinstein.slidingmenu.lib.app.SlidingFragmentActivity;
 
+import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.view.MenuItem;
 
 public class MainActivity extends SlidingFragmentActivity {
@@ -76,7 +75,7 @@ public class MainActivity extends SlidingFragmentActivity {
 		if (savedInstanceState == null) {
 			initFragments();
 			
-			FragmentTransaction leftFt = getSupportFragmentManager().beginTransaction();
+			FragmentTransaction leftFt = getFragmentManager().beginTransaction();
 			leftFt.replace(R.id.menu_frame, getLeftMenuFragment(), LeftMenuFragment.class.getName());
 			getSlidingMenu().showContent();
 			leftFt.commit();
@@ -88,7 +87,7 @@ public class MainActivity extends SlidingFragmentActivity {
 		Fragment friend = getFriendsFragment();
 		Fragment mentions = getMentionsFragment();
 		
-		FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+		FragmentTransaction transaction = getFragmentManager().beginTransaction();
 		if (!friend.isAdded()) {
 			transaction.add(R.id.content_frame, friend, FriendsFragment.class.getName());
 		}
@@ -108,7 +107,7 @@ public class MainActivity extends SlidingFragmentActivity {
 	}
 	
 	public LeftMenuFragment getLeftMenuFragment() {
-		LeftMenuFragment fragment = (LeftMenuFragment)getSupportFragmentManager().findFragmentByTag(LeftMenuFragment.class.getName());
+		LeftMenuFragment fragment = (LeftMenuFragment)getFragmentManager().findFragmentByTag(LeftMenuFragment.class.getName());
 		if (fragment == null) {
 			fragment = LeftMenuFragment.newInstance();
 		}
@@ -116,7 +115,7 @@ public class MainActivity extends SlidingFragmentActivity {
 	}
 	
 	public FriendsFragment getFriendsFragment() {
-		FriendsFragment fragment = (FriendsFragment)getSupportFragmentManager().findFragmentByTag(FriendsFragment.class.getName()); 
+		FriendsFragment fragment = (FriendsFragment)getFragmentManager().findFragmentByTag(FriendsFragment.class.getName()); 
 		if (fragment == null) {
 			fragment = FriendsFragment.newInstance(getAccountBean(), getUserBean(), getToken());
 		}
@@ -124,7 +123,7 @@ public class MainActivity extends SlidingFragmentActivity {
 	}
 	
 	public MentionsFragment getMentionsFragment() {
-		MentionsFragment fragment = (MentionsFragment) getSupportFragmentManager().findFragmentByTag(MentionsFragment.class.getName());
+		MentionsFragment fragment = (MentionsFragment)getFragmentManager().findFragmentByTag(MentionsFragment.class.getName());
 		if (fragment == null) {
 			fragment = MentionsFragment.newInstance();
 		}

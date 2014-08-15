@@ -3,8 +3,8 @@ package com.eastelsoft.weibo.ui.fragment;
 import com.eastelsoft.weibo.R;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 
+import android.app.Fragment;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,7 +32,6 @@ public class BaseFragment extends Fragment {
 	@Override
 	public void onViewCreated(View view, Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
-		buildAdapter();
 	}
 	
 	private void buildLayout(LayoutInflater inflater,View view) {
@@ -41,9 +40,6 @@ public class BaseFragment extends Fragment {
 		footerView = inflater.inflate(R.layout.listview_footer_layout, null);
 		getListView().addFooterView(footerView);
 		dismissFooterView();
-	}
-	
-	public void buildAdapter() {
 	}
 	
 	public ListView getListView() {

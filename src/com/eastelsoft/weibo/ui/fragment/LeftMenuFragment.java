@@ -6,9 +6,9 @@ import com.eastelsoft.weibo.R.layout;
 import com.eastelsoft.weibo.ui.main.MainActivity;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 
+import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
