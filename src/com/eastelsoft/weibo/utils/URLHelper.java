@@ -18,4 +18,6 @@ public class URLHelper {
     //timeline url
     public static String FRIENDS_TIMELINE = URL_SINA_WEIBO + "statuses/friends_timeline.json";
     
+    //friend group
+    public static String FRIENDS_GROUP = URL_SINA_WEIBO + "friendships/groups.json";
 }

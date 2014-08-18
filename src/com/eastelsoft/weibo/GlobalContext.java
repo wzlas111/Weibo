@@ -3,6 +3,7 @@ package com.eastelsoft.weibo;
 import java.util.List;
 
 import com.eastelsoft.weibo.bean.AccountBean;
+import com.eastelsoft.weibo.bean.GroupListBean;
 import com.eastelsoft.weibo.db.AccountDBTask;
 import com.eastelsoft.weibo.utils.SettingHelper;
 
@@ -17,6 +18,8 @@ public class GlobalContext extends Application {
 	private static GlobalContext globalContext = null;
 	
 	private AccountBean accountBean;
+	
+	private GroupListBean groupListBean;
 	
 	//bitmap image cache
 	private LruCache<String, Bitmap> appBitmapCache = null;
@@ -36,6 +39,21 @@ public class GlobalContext extends Application {
 		return accountBean.getUsernick();
 	}
 	
+	public String getToken() {
+		return getAccountBean().getAccess_token();
+	}
+	
+	public String getCurrentAccountId() {
+		return getAccountBean().getUid();
+	}
+	
+	public GroupListBean getGroup() {
+		if (groupListBean == null) {//read from db
+			
+		}
+		return groupListBean;
+	}
+	
 	public AccountBean getAccountBean() {
 		if (accountBean == null) {
 			String id = SettingHelper.getDefaultAccountId();
@@ -53,6 +71,10 @@ public class GlobalContext extends Application {
 	
 	public void setAccountBean(AccountBean bean) {
 		this.accountBean = bean;
+	}
+	
+	public void setGroup(GroupListBean group) {
+		this.groupListBean = group;
 	}
 	
 	public synchronized LruCache<String, Bitmap> getBitmapCache() {

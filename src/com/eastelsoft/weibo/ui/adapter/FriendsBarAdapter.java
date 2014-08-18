@@ -63,7 +63,6 @@ public class FriendsBarAdapter extends BaseAdapter {
 		} else {
 			holder = (ViewHolder)convertView.getTag();
 		}
-		holder.tv.setWidth(140);
 		holder.tv.setTextColor(mContext.getResources().getColor(R.color.white));
 		holder.tv.setText(valuesArr[position]);
 		return convertView;

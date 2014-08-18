@@ -1,14 +1,17 @@
 package com.eastelsoft.weibo.ui.fragment;
 
-import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.eastelsoft.weibo.GlobalContext;
 import com.eastelsoft.weibo.R;
 import com.eastelsoft.weibo.bean.AccountBean;
+import com.eastelsoft.weibo.bean.GroupBean;
 import com.eastelsoft.weibo.bean.TimelineBean;
 import com.eastelsoft.weibo.bean.UserBean;
+import com.eastelsoft.weibo.callback.GroupDataCallback;
 import com.eastelsoft.weibo.dao.HomeDao;
+import com.eastelsoft.weibo.dao.task.FriendGroupTask;
 import com.eastelsoft.weibo.ui.adapter.FriendsBarAdapter;
 import com.eastelsoft.weibo.ui.adapter.ListItemAdapter;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
@@ -39,6 +42,7 @@ public class FriendsFragment extends BaseFragment implements LoaderCallbacks<Lis
 	private String token;
 	
 	private List<TimelineBean> data = new ArrayList<TimelineBean>();
+	private String[] groupData;
 	
 	private int LOADER_ID = 0;
 	
@@ -74,6 +78,8 @@ public class FriendsFragment extends BaseFragment implements LoaderCallbacks<Lis
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
+		FriendGroupTask groupTask = new FriendGroupTask(accountBean.getAccess_token(), accountBean.getUid());
+		groupTask.execute();
 		switch (getCurrentState(savedInstanceState)) {
 			case FIRST_TIME_START://加载DB中缓存数据
 				
@@ -95,6 +101,8 @@ public class FriendsFragment extends BaseFragment implements LoaderCallbacks<Lis
 		buildAdapter();
 		pullToRefreshListView.setOnRefreshListener(refreshListener);
 		getLoaderManager().initLoader(LOADER_ID, null, this);
+		
+		buildActionBar();
 	}
 	
 	@Override
@@ -123,12 +131,17 @@ public class FriendsFragment extends BaseFragment implements LoaderCallbacks<Lis
 		actionBar.setDisplayHomeAsUpEnabled(true);
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
 		
-		barAdapter = new FriendsBarAdapter(getActivity(), buildGroupData());
+		List<GroupBean> list = new ArrayList<>();
+		if (GlobalContext.getInstance().getGroup() != null) {
+			list = GlobalContext.getInstance().getGroup().getLists();
+		}
+		groupData = buildGroupData(list);
+		barAdapter = new FriendsBarAdapter(getActivity(), groupData);
 		actionBar.setListNavigationCallbacks(barAdapter, new OnNavigationListener(){
 			@Override
 			public boolean onNavigationItemSelected(int itemPosition,
 					long itemId) {
-				Toast.makeText(getActivity(), "selected : "+buildGroupData()[itemPosition], Toast.LENGTH_SHORT).show();
+//				Toast.makeText(getActivity(), "selected : "+finalList.get(itemPosition), Toast.LENGTH_SHORT).show();
 				return true;
 			}
 		});
@@ -140,15 +153,14 @@ public class FriendsFragment extends BaseFragment implements LoaderCallbacks<Lis
 		getListView().setAdapter(listAdapter);
 	}
 	
-	private String[] buildGroupData() {
+	private String[] buildGroupData(List<GroupBean> groups) {
 		List<String> list = new ArrayList<String>();
 		
 		list.add(getString(R.string.g_all));
-		list.add(getString(R.string.g_each));
-		list.add(getString(R.string.g_special));
-		list.add(getString(R.string.g_star));
-		list.add(getString(R.string.g_it));
-		
+		for (GroupBean g : groups) {
+			list.add(g.getName());
+		}
+		System.out.println("group list : "+list.toString());
 		return list.toArray(new String[0]);
 	}
 
@@ -160,11 +172,15 @@ public class FriendsFragment extends BaseFragment implements LoaderCallbacks<Lis
 	@Override
 	public void onLoadFinished(Loader<List<TimelineBean>> loader,
 			List<TimelineBean> data) {
-		this.data.addAll(data);
-		System.out.println("size  : "+data.size());
+		if (data != null && data.size() > 0) {
+			this.data.addAll(data);
+			System.out.println("size  : "+data.size());
+		}else {
+			Toast.makeText(getActivity(), "网络有问题，数据加载失败!", Toast.LENGTH_SHORT).show();
+		}
 		listAdapter.notifyDataSetChanged();
-		
 		pullToRefreshListView.onRefreshComplete();
+		
 	}
 
 	@Override
@@ -196,7 +212,7 @@ public class FriendsFragment extends BaseFragment implements LoaderCallbacks<Lis
 				return new HomeDao(access_token).getBean().getStatuses();
 			} catch (Exception e) {
 				e.printStackTrace();
-				return null;
+				return new ArrayList<TimelineBean>();
 			}
 		}
 		
@@ -204,7 +220,8 @@ public class FriendsFragment extends BaseFragment implements LoaderCallbacks<Lis
 	
 	private OnRefreshListener<ListView> refreshListener = new OnRefreshListener<ListView>() {
 		public void onRefresh(PullToRefreshBase<ListView> refreshView) {
-			getLoaderManager().restartLoader(TRIM_MEMORY_UI_HIDDEN, null, FriendsFragment.this);
+			getLoaderManager().restartLoader(LOADER_ID, null, FriendsFragment.this);
 		}
 	};
+	
 }

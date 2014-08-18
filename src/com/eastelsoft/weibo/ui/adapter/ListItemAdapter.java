@@ -76,8 +76,8 @@ public class ListItemAdapter extends BaseAdapter {
 		UserBean user = bean.getUser();
 		viewHolder.tv_repost_count.setText(String.valueOf(bean.getReposts_count()));
 		viewHolder.tv_comment_count.setText(String.valueOf(bean.getComments_count()));
-		viewHolder.tv_post_time.setText(bean.getCreated_at());
-		viewHolder.tv_source.setText(bean.getSource());
+		viewHolder.tv_post_time.setText(bean.getTimeInFormat());
+		viewHolder.tv_source.setText(bean.getSourceString());
 		viewHolder.tv_content.setText(bean.getText());
 		if (user != null) {
 			viewHolder.tv_username.setText(user.getName());
