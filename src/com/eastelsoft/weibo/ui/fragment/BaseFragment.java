@@ -64,4 +64,12 @@ public class BaseFragment extends Fragment {
 		isFirstStartFlag = false;
 		return FIRST_TIME_START;
 	}
+	
+	public void showFooterView() {
+		View view = footerView.findViewById(R.id.loading_progressBar);
+		view.setVisibility(View.VISIBLE);
+        view.setScaleX(1.0f);
+        view.setScaleY(1.0f);
+        view.setAlpha(1.0f);
+	}
 }

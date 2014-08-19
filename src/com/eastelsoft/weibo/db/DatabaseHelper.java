@@ -2,6 +2,7 @@ package com.eastelsoft.weibo.db;
 
 import com.eastelsoft.weibo.GlobalContext;
 import com.eastelsoft.weibo.db.table.AccountTable;
+import com.eastelsoft.weibo.db.table.GroupTable;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
@@ -12,7 +13,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	private static DatabaseHelper singleton = null;
 	
 	private static String DB_NAME = "weibo.db";
-	private static int DB_VERSION = 1;
+	private static int DB_VERSION = 2;
 	
 	static final String CREATE_ACCOUNT_TABLE_SQL = "create table " + AccountTable.TABLE_NAME
             + "("
@@ -25,14 +26,23 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + AccountTable.INFOJSON + " text"
             + ");";
 	
+	static final String CREATE_GROUP_TABLE_SQL = "create table " + GroupTable.TABLE_NAME
+			+ "("
+			+ GroupTable.ACCOUNT_ID + " text primary key,"
+			+ GroupTable.JSON + " text"
+			+ ");";
+	
 	@Override
 	public void onCreate(SQLiteDatabase db) {
 		db.execSQL(CREATE_ACCOUNT_TABLE_SQL);
+		db.execSQL(CREATE_GROUP_TABLE_SQL);
 	}
 
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
+		if (newVersion <= 2) {
+			db.execSQL(CREATE_GROUP_TABLE_SQL);
+		}
 	}
 	
 	DatabaseHelper(Context context) {

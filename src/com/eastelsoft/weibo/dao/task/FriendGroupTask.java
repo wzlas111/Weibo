@@ -3,6 +3,7 @@ package com.eastelsoft.weibo.dao.task;
 import com.eastelsoft.weibo.GlobalContext;
 import com.eastelsoft.weibo.bean.GroupListBean;
 import com.eastelsoft.weibo.dao.GroupDao;
+import com.eastelsoft.weibo.db.GroupDBTask;
 
 import android.os.AsyncTask;
 
@@ -36,7 +37,7 @@ public class FriendGroupTask extends AsyncTask<Void, Integer, GroupListBean> {
 			return;
 		}
 		//更新数据库
-		
+		GroupDBTask.addOrUpdate(result, accountId);
 		//读入程序缓存application
 		GlobalContext.getInstance().setGroup(result);
 	}

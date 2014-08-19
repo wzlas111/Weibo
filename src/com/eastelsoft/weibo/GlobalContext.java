@@ -5,6 +5,7 @@ import java.util.List;
 import com.eastelsoft.weibo.bean.AccountBean;
 import com.eastelsoft.weibo.bean.GroupListBean;
 import com.eastelsoft.weibo.db.AccountDBTask;
+import com.eastelsoft.weibo.db.GroupDBTask;
 import com.eastelsoft.weibo.utils.SettingHelper;
 
 import android.app.ActivityManager;
@@ -49,7 +50,8 @@ public class GlobalContext extends Application {
 	
 	public GroupListBean getGroup() {
 		if (groupListBean == null) {//read from db
-			
+			groupListBean = GroupDBTask.query(GlobalContext.getInstance().getCurrentAccountId());
+			System.out.println("group : read from db");
 		}
 		return groupListBean;
 	}

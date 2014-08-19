@@ -14,7 +14,7 @@ public class HomeDao {
 	private String access_token;
 	private String since_id = "0";
 	private String max_id = "0";
-	private String count = "20";
+	private String count = "1";
 	private String page = "1";
 	private String base_app = "0";
 	private String feature = "0";
@@ -26,6 +26,8 @@ public class HomeDao {
 	
 	public String getJSON() throws Exception{
 		String urlString = URLHelper.FRIENDS_TIMELINE;
+		
+		System.out.println("url dao maxId : "+max_id);
 		
 		Map<String, String> params = new HashMap<>();
 		params.put("access_token", access_token);

@@ -9,12 +9,12 @@ import com.eastelsoft.weibo.bean.AccountBean;
 import com.eastelsoft.weibo.bean.GroupBean;
 import com.eastelsoft.weibo.bean.TimelineBean;
 import com.eastelsoft.weibo.bean.UserBean;
-import com.eastelsoft.weibo.callback.GroupDataCallback;
 import com.eastelsoft.weibo.dao.HomeDao;
 import com.eastelsoft.weibo.dao.task.FriendGroupTask;
 import com.eastelsoft.weibo.ui.adapter.FriendsBarAdapter;
 import com.eastelsoft.weibo.ui.adapter.ListItemAdapter;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.OnLastItemVisibleListener;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
 
 import android.annotation.SuppressLint;
@@ -25,6 +25,8 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.AbsListView.OnScrollListener;
+import android.widget.AbsListView;
 import android.widget.ListView;
 import android.widget.Toast;
 import android.content.AsyncTaskLoader;
@@ -44,7 +46,8 @@ public class FriendsFragment extends BaseFragment implements LoaderCallbacks<Lis
 	private List<TimelineBean> data = new ArrayList<TimelineBean>();
 	private String[] groupData;
 	
-	private int LOADER_ID = 0;
+	private static final int NEW_MSG_LOADER_ID = 0;
+	private static final int OLD_MSG_LOADER_ID = 1;
 	
 	public FriendsFragment() {}
 	
@@ -100,7 +103,10 @@ public class FriendsFragment extends BaseFragment implements LoaderCallbacks<Lis
 		//refresh();
 		buildAdapter();
 		pullToRefreshListView.setOnRefreshListener(refreshListener);
-		getLoaderManager().initLoader(LOADER_ID, null, this);
+		pullToRefreshListView.setOnLastItemVisibleListener(lastItemListener);
+		pullToRefreshListView.setOnScrollListener(scrollListener);
+		
+		getLoaderManager().initLoader(NEW_MSG_LOADER_ID, null, this);
 		
 		buildActionBar();
 	}
@@ -160,27 +166,49 @@ public class FriendsFragment extends BaseFragment implements LoaderCallbacks<Lis
 		for (GroupBean g : groups) {
 			list.add(g.getName());
 		}
-		System.out.println("group list : "+list.toString());
 		return list.toArray(new String[0]);
 	}
 
 	@Override
 	public Loader<List<TimelineBean>> onCreateLoader(int id, Bundle args) {
-		return new TimelineDataLoader(getActivity(), accountBean);
+		String maxId = "0";
+		System.out.println("loader data size : "+this.data.size());
+		switch (id) {
+			case NEW_MSG_LOADER_ID:
+				return new TimelineDataLoader(getActivity(), accountBean, maxId, NEW_MSG_LOADER_ID);
+			case OLD_MSG_LOADER_ID:
+				System.out.println("loader onCreateLoader");
+				if (this.data.size() > 0) {
+					maxId = this.data.get(this.data.size()-1).getId();
+				}
+				return new TimelineDataLoader(getActivity(), accountBean, maxId, OLD_MSG_LOADER_ID);
+		}
+		return null;
 	}
 
 	@Override
 	public void onLoadFinished(Loader<List<TimelineBean>> loader,
 			List<TimelineBean> data) {
-		if (data != null && data.size() > 0) {
-			this.data.addAll(data);
-			System.out.println("size  : "+data.size());
-		}else {
-			Toast.makeText(getActivity(), "网络有问题，数据加载失败!", Toast.LENGTH_SHORT).show();
+		System.out.println("loader id :"+loader.getId());
+		switch (loader.getId()) {
+			case NEW_MSG_LOADER_ID:
+				if (data != null && data.size() > 0) {
+					this.data.clear();
+					this.data.addAll(data);
+				}else {
+					Toast.makeText(getActivity(), "网络有问题，数据加载失败!", Toast.LENGTH_SHORT).show();
+				}
+				break;
+			case OLD_MSG_LOADER_ID:
+				if (data != null && data.size() > 0) {
+					this.data.addAll(data.subList(1, data.size()));
+				}else {
+					Toast.makeText(getActivity(), "网络有问题，数据加载失败!", Toast.LENGTH_SHORT).show();
+				}
+				break;
 		}
 		listAdapter.notifyDataSetChanged();
 		pullToRefreshListView.onRefreshComplete();
-		
 	}
 
 	@Override
@@ -192,10 +220,14 @@ public class FriendsFragment extends BaseFragment implements LoaderCallbacks<Lis
 	public static class TimelineDataLoader extends AsyncTaskLoader<List<TimelineBean>> {
 
 		private AccountBean accountBean;
+		private int type;
+		private String maxId;
 		
-		public TimelineDataLoader(Context context,AccountBean bean) {
+		public TimelineDataLoader(Context context,AccountBean bean,String maxId,int type) {
 			super(context);
 			this.accountBean = bean;
+			this.type = type;
+			this.maxId = maxId;
 		}
 		
 		@Override
@@ -206,22 +238,65 @@ public class FriendsFragment extends BaseFragment implements LoaderCallbacks<Lis
 
 		@Override
 		public List<TimelineBean> loadInBackground() {
-			System.out.println("loading data");
 			String access_token = accountBean.getAccess_token();
 			try {
-				return new HomeDao(access_token).getBean().getStatuses();
+				switch (type) {
+					case NEW_MSG_LOADER_ID:
+						return new HomeDao(access_token).getBean().getStatuses();
+					case OLD_MSG_LOADER_ID:
+						try {
+							Thread.sleep(2 * 1000);
+						} catch (Exception e) {
+						}
+						HomeDao dao = new HomeDao(access_token);
+						dao.setCount("2");
+						dao.setMax_id(maxId);
+						return dao.getBean().getStatuses();
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
-				return new ArrayList<TimelineBean>();
 			}
+			return new ArrayList<TimelineBean>();
 		}
 		
 	}
 	
 	private OnRefreshListener<ListView> refreshListener = new OnRefreshListener<ListView>() {
 		public void onRefresh(PullToRefreshBase<ListView> refreshView) {
-			getLoaderManager().restartLoader(LOADER_ID, null, FriendsFragment.this);
+			getLoaderManager().restartLoader(NEW_MSG_LOADER_ID, null, FriendsFragment.this);
 		}
 	};
+	
+	private OnLastItemVisibleListener lastItemListener = new OnLastItemVisibleListener() {
+
+		@Override
+		public void onLastItemVisible() {
+			showFooterView();
+			createOldLoader();
+		}
+	};
+	
+	private OnScrollListener scrollListener = new OnScrollListener() {
+		
+		@Override
+		public void onScrollStateChanged(AbsListView view, int scrollState) {
+		}
+		
+		@Override
+		public void onScroll(AbsListView view, int firstVisibleItem,
+				int visibleItemCount, int totalItemCount) {
+		}
+	};
+	
+	private void createOldLoader() {
+		Loader<List<TimelineBean>> loader = getLoaderManager().getLoader(OLD_MSG_LOADER_ID);
+		if (loader != null) {
+			System.out.println("loader restartLoader");
+			getLoaderManager().restartLoader(OLD_MSG_LOADER_ID, null, this);
+		} else {
+			System.out.println("loader initLoader");
+			getLoaderManager().initLoader(OLD_MSG_LOADER_ID, null, this);
+		}
+	}
 	
 }
